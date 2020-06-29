@@ -1,26 +1,30 @@
-import React from 'react';
+import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { ProdutoService } from './service/ProdutoService';
+import {DataTable} from 'primereact/datatable';
+import {Column} from 'primereact/column';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends Component{
+  constructor(){
+    super();
+    this.state = {};
+    this.produtoService = new ProdutoService();
+  }
+
+  componentDidMount(){
+    this.produtoService.getAll().then(data => this.setState({produtos: data}))
+  }
+
+  render(){
+    return(
+      <DataTable value={this.state.produtos}>
+        <Column field="id" header="ID"></Column>
+        <Column field="nome" header="NOME"></Column>  
+        <Column field="quantidade" header="QUANTIDADE"></Column>
+        <Column field="valor" header="VALOR"></Column> 
+      </DataTable>
+    );
+  }
+
 }
-
-export default App;
