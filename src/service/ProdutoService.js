@@ -11,4 +11,8 @@ export class ProdutoService{
     save(produto){
         return axios.post(this.baseUrl + "produto", produto).then(res => res.data);
     }
+
+    delete(id){
+        return axios.delete(this.baseUrl + "deletarProduto/"+id).then(res => res.data);
+    }
 }

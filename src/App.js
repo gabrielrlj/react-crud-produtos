@@ -24,6 +24,9 @@ export default class App extends Component{
         nome: null,
         quantidade: null,
         valor: null
+      },
+      selectedProduto : {
+
       }
     };
     this.items = [
@@ -35,16 +38,17 @@ export default class App extends Component{
       {
         label: 'Editar',
         icon: 'pi pi-fw pi-pencil',
-        command : () => {alert('Registro alterado!')}
+        command : () => {this.showEditDialog()}
       },
       {
         label: 'Deletar',
         icon: 'pi pi-fw pi-trash',
-        command : () => {alert('Registro deletado!')}
+        command : () => {this.delete()}
       },
     ];
     this.produtoService = new ProdutoService();
     this.save = this.save.bind(this);
+    this.delete = this.delete.bind(this);
     this.footer = (
       <div>
         <Button label="Salvar" icon="pi pi-check" onClick={this.save} />
@@ -68,9 +72,18 @@ export default class App extends Component{
           valor: null
         }
       });
-      this.growl.show({severity: 'success', summary: 'Atenção!', detail: 'Produto cadastrado.'}); 
+      this.growl.show({severity: 'success', summary: 'Atenção!', detail: 'Produto salvo.'}); 
       this.produtoService.getAll().then(data => this.setState({produtos: data}))
     })
+  }
+
+  delete(){
+    if(window.confirm("Realmente deseja apagar o registro?")){
+      this.produtoService.delete(this.state.selectedProduto.id).then(data => {
+          this.growl.show({severity: 'success', summary: 'Atenção!', detail: 'Produto removido.'}); 
+          this.produtoService.getAll().then(data => this.setState({produtos: data}))
+      });
+    }
   }
 
   render(){
@@ -80,7 +93,7 @@ export default class App extends Component{
         <br>
         </br>
         <Panel header="React CRUD App">
-          <DataTable value={this.state.produtos}>
+          <DataTable value={this.state.produtos} selectionMode="single" selection={this.state.selectedProduto} onSelectionChange={e => this.setState({selectedProduto: e.value})}>
             <Column field="id" header="ID"></Column>
             <Column field="nome" header="NOME"></Column>  
             <Column field="quantidade" header="QUANTIDADE"></Column>
@@ -151,5 +164,17 @@ export default class App extends Component{
     });
     document.getElementById('produto-form').reset();
   }
+
+showEditDialog(){
+  this.setState({
+    visible : true,
+    produto: {
+      id: this.state.selectedProduto.id,
+      nome: this.state.selectedProduto.nome,
+      quantidade: this.state.selectedProduto.quantidade,
+      valor: this.state.selectedProduto.valor 
+    } 
+  })
+}
 
 }
