@@ -162,7 +162,7 @@ export default class App extends Component{
         valor: null
       } 
     });
-    document.getElementById('produto-form').reset();
+    //document.getElementById('produto-form').reset();
   }
 
 showEditDialog(){
